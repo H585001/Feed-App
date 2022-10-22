@@ -65,6 +65,10 @@ public class PollService {
 		return pollDAO.readPoll(id);
 	}
 	
+	public Poll getPollByCode(String code) {
+		return pollDAO.readPollByCode(code);
+	}
+	
 	public Poll deletePoll(Long id) {
 		Poll poll = pollDAO.readPoll(id);
 		if (poll == null) {
@@ -176,4 +180,5 @@ public class PollService {
 		FAUser user = userDAO.readUser(userId);
 		return pollDAO.getUserPolls(user);
 	}
+
 }

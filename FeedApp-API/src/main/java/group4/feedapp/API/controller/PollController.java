@@ -33,6 +33,19 @@ public class PollController {
         return new ResponseEntity<>(polls, HttpStatus.OK);
     }
 
+    @GetMapping("/polls/access/{code}")
+    public ResponseEntity<Poll> getPoll(@PathVariable String code) {
+
+        Poll poll = pollService.getPollByCode(code);
+
+        if (poll == null) {
+            System.out.println(String.format("Poll with the access code  \"%s\" not found!", code));
+            return new ResponseEntity<>(poll, HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(poll, HttpStatus.OK);
+    }
+    
     @GetMapping("/polls/{id}")
     public ResponseEntity<Poll> getPoll(@PathVariable Long id) {
 

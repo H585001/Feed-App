@@ -93,6 +93,21 @@ public class PollDAOImplementation implements PollDAO {
 		}		
 		return poll;
 	}
+	
+	@Override
+	public Poll readPollByCode(String code) {
+		EntityManager em = emf.createEntityManager();
+		Poll poll = null;
+		try {
+			TypedQuery<Poll> query = em.createQuery(
+					"SELECT p FROM Poll p WHERE p.accessCode = :code", Poll.class);
+			query.setParameter("code", code);
+			poll = query.getSingleResult();
+		} finally {
+			em.close();
+		}
+		return poll;
+	}
 
 	@Override
 	public Collection<Poll> readPolls() {
