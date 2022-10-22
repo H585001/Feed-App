@@ -9,6 +9,8 @@ public interface FAUserDAO {
 	FAUser createUser(FAUser newUser);
 	FAUser createUser(String email, String password, String name, boolean isAdmin);
 	FAUser readUser(Long id);
+	FAUser readUserByName(String name);
+	FAUser readUserByEmail(String email);
 	Collection<FAUser> readUsers();
 	FAUser updateUser(Long id, FAUser updatedUser);
 	FAUser deleteUser(Long id);

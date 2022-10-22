@@ -2,6 +2,8 @@ package group4.feedapp.API.controller;
 
 import java.util.Collection;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,71 +28,80 @@ public class FAUserController {
 	}
 	
 	@GetMapping("/users")
-    public Collection<FAUser> getUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<Collection<FAUser>> getUsers() {
+        return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
     }
 
     @GetMapping("/users/{id}")
-    public FAUser getUser(@PathVariable Long id) {
+    public ResponseEntity<FAUser> getUser(@PathVariable Long id) {
 
         FAUser user = userService.getUser(id);
 
         if (user == null) {
             System.out.println(String.format("User with the id  \"%s\" not found!", id));
-            // TODO Exception
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        return user;
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
     
     @GetMapping("/users/{id}/polls")
-    public Collection<Poll> getUserPolls(@PathVariable Long id) {
-    	return pollService.getUserPolls(id);
+    public ResponseEntity<Collection<Poll>> getUserPolls(@PathVariable Long id) {
+    	if(userService.getUser(id) == null) {
+    		return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    	}
+    	return new ResponseEntity<>(pollService.getUserPolls(id), HttpStatus.OK);
     }
 
     @PutMapping("/users/{id}")
-    public FAUser updateUser(@RequestBody FAUser updatedUser, @PathVariable Long id) {
+    public ResponseEntity<FAUser> updateUser(@RequestBody FAUser updatedUser, @PathVariable Long id) {
 
         FAUser user = userService.updateUser(id, updatedUser);
 
         if (user == null) {
             System.out.println(String.format("User with the id  \"%s\" not found!", id));
-            // TODO Exception
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        return user;
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PostMapping("/users")
-    public FAUser addUser(@RequestBody FAUser newUser) {
-        return userService.addUser(newUser.getEmail(),newUser.getPassword(),newUser.getName(), newUser.isAdmin());
+    public ResponseEntity<FAUser> addUser(@RequestBody FAUser newUser) {
+        FAUser user = userService.addUser(newUser.getEmail(),newUser.getPassword(),newUser.getName(), newUser.isAdmin());
+        if(user == null) {
+        	return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @DeleteMapping("/users/{id}")
-    public FAUser deleteUser(@PathVariable Long id) {
+    public ResponseEntity<FAUser> deleteUser(@PathVariable Long id) {
 
         FAUser user = userService.deleteUser(id);
 
         if (user == null) {
             System.out.println(String.format("User with the id  \"%s\" not found!", id));
-            // TODO Exception
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 
-        return user;
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }	
     
     @PostMapping("/users/{id}/polls")
-    public Poll addPoll(@RequestBody Poll newPoll, @PathVariable Long id) {
+    public ResponseEntity<Poll> addPoll(@RequestBody Poll newPoll, @PathVariable Long id) {
     	FAUser creator = userService.getUser(id);
     	
     	 if (creator == null) {
              System.out.println(String.format("User with the id  \"%s\" not found!", id));
-             return null;
+             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
          }
     	
-        return pollService.addPoll(newPoll.getQuestion(), newPoll.getNoCount(), newPoll.getYesCount(), 
+    	 Poll poll = pollService.addPoll(newPoll.getQuestion(), newPoll.getNoCount(), newPoll.getYesCount(), 
         		newPoll.getStartTime(), newPoll.getEndTime(),newPoll.isPublic(), newPoll.getStatus(), 
         		newPoll.getAccessCode(), creator);
+    	 return new ResponseEntity<>(poll, HttpStatus.OK);
+        
     }
 	
 }

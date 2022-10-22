@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import group4.feedapp.API.dao.IoTDeviceDAO;
 import group4.feedapp.API.dao.IoTVotesDAO;
+import group4.feedapp.API.dao.PollDAO;
 import group4.feedapp.API.model.IoTDevice;
 import group4.feedapp.API.model.Poll;
 
@@ -14,17 +15,21 @@ import group4.feedapp.API.model.Poll;
 public class IoTDeviceService {
 	
 	private IoTDeviceDAO iotDao;
+	private PollDAO pollDAO;
 	
 	@Autowired
-	public IoTDeviceService(IoTDeviceDAO iotDao) {
+	public IoTDeviceService(IoTDeviceDAO iotDao, PollDAO pollDAO) {
 		this.iotDao = iotDao;
+		this.pollDAO = pollDAO;
 	}
 	
-	public Poll connectDeviceToPoll(Long id, Poll poll) {
+	public IoTDevice connectDeviceToPoll(Long id, Poll poll) {
 		IoTDevice device = iotDao.readIoTDevice(id);
 		device.setLinkedPoll(poll);
-		iotDao.updateIoTDevice(id, device);
-		return poll;
+		device = iotDao.updateIoTDevice(id, device);
+		poll.getLinkedDevices().add(device);
+		pollDAO.updatePoll(poll.getId(), poll);
+		return device;
 	}
 	
 	public Poll getConnectedPoll(Long id) {
@@ -38,7 +43,13 @@ public class IoTDeviceService {
 	public IoTDevice getDevice(Long id) {
 		return iotDao.readIoTDevice(id);
 	}
+
+	public IoTDevice addDevice(String deviceName) {
+		return iotDao.createIoTDevice(deviceName, null);
+	}
 	
-	
+	public IoTDevice deleteDevice(Long id) {
+		return iotDao.deleteIoTDevice(id);
+	}
 
 }

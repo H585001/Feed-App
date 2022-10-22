@@ -66,7 +66,7 @@ public class Vote {
 
 	@Override
 	public String toString() {
-		return "Vote [id=" + id + ", voter=" + voter + ", votePoll=" + votePoll + ", answer=" + answer + "]";
+		return "Vote [id=" + id + ", voter=" + voter.getName() + ", Poll Question=" + votePoll.getQuestion() + ", answer=" + answer + "]";
 	}
 	
 }

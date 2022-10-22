@@ -5,12 +5,14 @@ import java.util.Collection;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
 import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
 import group4.feedapp.API.model.FAUser;
+import group4.feedapp.API.model.Vote;
 
 
 @Repository
@@ -24,6 +26,9 @@ public class FAUserDAOImplementation implements FAUserDAO {
 	
 	@Override
 	public FAUser createUser(FAUser user) {
+		if(user == null || readUserByEmail(user.getEmail()) != null) {
+			return null;
+		}
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         
@@ -167,6 +172,38 @@ public class FAUserDAOImplementation implements FAUserDAO {
 		if(!success){
 			return null;
 		};
+		return user;
+	}
+
+	@Override
+	public FAUser readUserByName(String name) {
+		EntityManager em = emf.createEntityManager();        
+        FAUser user = null;
+		try {
+			TypedQuery<FAUser> q = em.createQuery("SELECT u FROM FAUser u WHERE u.name = :name ", FAUser.class);
+			q.setParameter("name", name);
+			user = q.getSingleResult();
+		} catch (NoResultException e) {
+			
+		} finally {
+			em.close();
+		}		
+		return user;
+	}
+
+	@Override
+	public FAUser readUserByEmail(String email) {
+		EntityManager em = emf.createEntityManager();        
+        FAUser user = null;
+		try {
+			TypedQuery<FAUser> q = em.createQuery("SELECT u FROM FAUser u WHERE u.email = :email ", FAUser.class);
+			q.setParameter("email", email);
+			user = q.getSingleResult();
+		} catch (NoResultException e) {
+			
+		} finally {
+			em.close();
+		}		
 		return user;
 	}	
 	

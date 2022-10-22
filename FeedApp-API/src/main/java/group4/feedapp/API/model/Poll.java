@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PreRemove;
 
 import org.eclipse.persistence.annotations.CascadeOnDelete;
 
@@ -47,6 +48,10 @@ public class Poll {
 	@JsonIgnore
 	private List<IoTVotes> iotVotes;
 	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="linkedPoll")
+	@JsonIgnore
+	private List<IoTDevice> linkedDevices;
+	
 	public Poll() {}
 	
 	public Poll(String question, int noCount, int yesCount, LocalDateTime startTime, LocalDateTime endTime,
@@ -66,7 +71,7 @@ public class Poll {
 
 	public Poll(String question, int noCount, int yesCount, LocalDateTime startTime, LocalDateTime endTime,
 			boolean isPublic, int status, String accessCode, FAUser creator, List<Vote> userVotes,
-			List<IoTVotes> iotVotes) {
+			List<IoTVotes> iotVotes, List<IoTDevice> devices) {
 		this.question = question;
 		this.noCount = noCount;
 		this.yesCount = yesCount;
@@ -78,6 +83,7 @@ public class Poll {
 		this.creator = creator;
 		this.userVotes = userVotes;
 		this.iotVotes = iotVotes;
+		this.linkedDevices = devices;
 	}
 
 	public Long getId() {
@@ -171,13 +177,20 @@ public class Poll {
 	public void setIotVotes(List<IoTVotes> iotVotes) {
 		this.iotVotes = iotVotes;
 	}
+	
+	public List<IoTDevice> getLinkedDevices() {
+		return linkedDevices;
+	}
+
+	public void setLinkedDevices(List<IoTDevice> devices) {
+		this.linkedDevices = devices;
+	}
 
 	@Override
 	public String toString() {
 		return "Poll [id=" + id + ", question=" + question + ", noCount=" + noCount + ", yesCount=" + yesCount
 				+ ", startTime=" + startTime + ", endTime=" + endTime + ", isPublic=" + isPublic + ", status=" + status
-				+ ", accessCode=" + accessCode + ", creator=" + creator + ", userVotes=" + userVotes + ", iotVotes="
-				+ iotVotes + "]";
+				+ ", accessCode=" + accessCode + ", creator=" + creator.getName();
 	}
 
 }

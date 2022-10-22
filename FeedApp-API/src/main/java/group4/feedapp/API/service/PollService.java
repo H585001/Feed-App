@@ -43,7 +43,14 @@ public class PollService {
 			// Updating the creator's list of polls
 			owner.getCreatedPolls().add(poll);
 			userDAO.updateUser(owner.getId(), owner);
-			return pollDAO.createPoll(poll);
+			poll = pollDAO.createPoll(poll);
+			
+			if (poll != null) {
+				// TODO Messaging Event --> Created poll
+				System.out.println("Poll created: " + poll.toString());
+			}
+			
+			return poll;
 		}
 		
 		return null;
@@ -59,11 +66,35 @@ public class PollService {
 	}
 	
 	public Poll deletePoll(Long id) {
+		Poll poll = pollDAO.readPoll(id);
+		if (poll == null) {
+			return null;
+		}
+		// Resetting the linked polls
+		for(IoTDevice device : poll.getLinkedDevices()) {
+			device.setLinkedPoll(null);
+			deviceDAO.updateIoTDevice(device.getId(), device);
+		}
+		for(Vote v : poll.getUserVotes()) {
+			voteDAO.deleteVote(v.getId());
+		}
+		for(IoTVotes v : poll.getIotVotes()) {
+			IoTVotesDAO.deleteIoTVotes(v.getId());
+		}
 		return pollDAO.deletePoll(id);
 	}
 	
 	public Poll updatePoll(Long id, Poll updatedPoll) {
 		// TODO check if owner changed ?
+		Poll poll = pollDAO.readPoll(id);
+		if (poll == null) {
+			return null;
+		}
+		
+		// TODO check if the poll is being closed: Message Event --> Poll closed 
+		if (poll.getStatus() != 2 && updatedPoll.getStatus() == 2) {
+			System.out.println("Poll closed: " + poll.toString());
+		}
 		return pollDAO.updatePoll(id, updatedPoll);
 	}
 	
@@ -74,11 +105,15 @@ public class PollService {
 	}
 	
 	public Vote voteOnPoll(Long pollId, Long userId, Vote vote) {
-		// TODO : check if the poll is open (status = 1)
 		
+		// User is only able to vote on the poll if:
+		// - vote, poll and voter != null
+		// - The poll is open (status == 1)
+		// - The user hasn't already voted on the poll
+		// - TODO Check the time limit?
 		Poll poll = getPoll(pollId);
 		FAUser voter = userDAO.readUser(userId);
-		if(vote!= null && poll!= null && voter != null && voteDAO.findUserVote(poll, voter) == null) {
+		if(vote!= null && poll!= null && poll.getStatus() == 1 && voter != null && voteDAO.findUserVote(poll, voter) == null) {
 			poll.getUserVotes().add(vote);
 			if(vote.getAnswer()) {
 				poll.setYesCount(poll.getYesCount() + 1);
@@ -99,10 +134,13 @@ public class PollService {
 	}
 	
 	public Vote voteOnPoll(Long pollId, Vote vote) {
-		// TODO : check if the poll is open (status = 1)
-		
+		// A public vote is possible if:
+		// - vote and poll != null
+		// - The poll is open (status == 1)
+		// - The poll is public
+		// - TODO Check the time limit?
 		Poll poll = getPoll(pollId);
-		if(vote!= null && poll!= null && poll.isPublic()) {
+		if(vote!= null && poll!= null && poll.getStatus() == 1 && poll.isPublic()) {
 			if(vote.getAnswer()) {
 				poll.setYesCount(poll.getYesCount() + 1);
 			}else {
@@ -121,7 +159,7 @@ public class PollService {
 	public IoTVotes voteOnPoll(Long pollId, Long deviceId, IoTVotes votes) {
 		Poll poll = getPoll(pollId);
 		IoTDevice device = deviceDAO.readIoTDevice(deviceId);
-		if(poll != null && device != null) {
+		if(poll != null && poll.getStatus() == 1 && device != null) {
 			poll.getIotVotes().add(votes);
 			poll.setNoCount(poll.getNoCount() + votes.getNoCount());
 			poll.setYesCount(poll.getYesCount() + votes.getYesCount());

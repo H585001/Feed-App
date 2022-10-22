@@ -30,6 +30,14 @@ public class FAUserService {
 		return userDAO.readUser(id);
 	}
 	
+	public FAUser getUserByName(String name){
+		return userDAO.readUserByName(name);
+	}
+	
+	public FAUser getUserByEmail(String email){
+		return userDAO.readUserByEmail(email);
+	}
+	
 	public FAUser deleteUser(Long id) {
 		return userDAO.deleteUser(id);
 	}

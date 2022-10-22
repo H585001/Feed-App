@@ -8,6 +8,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class IoTVotes {
 	@Id
@@ -18,10 +20,12 @@ public class IoTVotes {
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "iotDevice_id")
+	@JsonIgnore
 	private IoTDevice device;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "poll_id")
+	@JsonIgnore
 	private Poll iotVotePoll;
 
 	public IoTVotes() {}
