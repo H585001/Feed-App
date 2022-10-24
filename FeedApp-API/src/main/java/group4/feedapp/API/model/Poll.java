@@ -1,7 +1,7 @@
 package group4.feedapp.API.model;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -13,7 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.PreRemove;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.eclipse.persistence.annotations.CascadeOnDelete;
 
@@ -27,8 +28,12 @@ public class Poll {
 	private String question;
 	private int noCount;
 	private int yesCount;
-	private LocalDateTime startTime;
-	private LocalDateTime endTime;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date startTime;
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date endTime;
+	
 	private boolean isPublic;
 	private int status;
 	private String accessCode;
@@ -54,7 +59,7 @@ public class Poll {
 	
 	public Poll() {}
 	
-	public Poll(String question, int noCount, int yesCount, LocalDateTime startTime, LocalDateTime endTime,
+	public Poll(String question, int noCount, int yesCount, Date startTime, Date endTime,
 			boolean isPublic, int status, String accessCode, FAUser creator) {
 		this.question = question;
 		this.noCount = noCount;
@@ -69,7 +74,7 @@ public class Poll {
 		this.iotVotes = new ArrayList<IoTVotes>();;
 	}
 
-	public Poll(String question, int noCount, int yesCount, LocalDateTime startTime, LocalDateTime endTime,
+	public Poll(String question, int noCount, int yesCount, Date startTime, Date endTime,
 			boolean isPublic, int status, String accessCode, FAUser creator, List<Vote> userVotes,
 			List<IoTVotes> iotVotes, List<IoTDevice> devices) {
 		this.question = question;
@@ -114,19 +119,19 @@ public class Poll {
 		this.yesCount = yesCount;
 	}
 
-	public LocalDateTime getStartTime() {
+	public Date getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(LocalDateTime startTime) {
+	public void setStartTime(Date startTime) {
 		this.startTime = startTime;
 	}
 
-	public LocalDateTime getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(LocalDateTime endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 

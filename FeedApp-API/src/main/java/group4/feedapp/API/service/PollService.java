@@ -1,6 +1,6 @@
 package group4.feedapp.API.service;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,8 @@ import group4.feedapp.API.dao.IoTDeviceDAO;
 import group4.feedapp.API.dao.IoTVotesDAO;
 import group4.feedapp.API.dao.PollDAO;
 import group4.feedapp.API.dao.VoteDAO;
+import group4.feedapp.API.messaging.RabbitMQSender;
+import group4.feedapp.API.messaging.Topics;
 import group4.feedapp.API.model.FAUser;
 import group4.feedapp.API.model.IoTDevice;
 import group4.feedapp.API.model.IoTVotes;
@@ -26,6 +28,9 @@ public class PollService {
 	private final VoteDAO voteDAO;
 	private final IoTVotesDAO IoTVotesDAO;
 	
+	@Autowired 
+	private RabbitMQSender messageSender;
+	
 	@Autowired
 	public PollService(PollDAO pollDAO, FAUserDAO userDAO, IoTDeviceDAO deviceDAO, VoteDAO voteDAO, IoTVotesDAO IoTVotesDAO) {
 		this.pollDAO = pollDAO;
@@ -35,7 +40,7 @@ public class PollService {
 		this.IoTVotesDAO = IoTVotesDAO;
 	}
 
-	public Poll addPoll(String question, int noCount, int yesCount, LocalDateTime startTime, LocalDateTime endTime,
+	public Poll addPoll(String question, int noCount, int yesCount, Date startTime, Date endTime,
 			boolean isPublic, int status, String accessCode, FAUser creator) {
 		Poll poll = new Poll(question, noCount, yesCount, startTime, endTime, isPublic, status, accessCode, creator);
 		FAUser owner = userDAO.readUser(creator.getId());
@@ -47,7 +52,7 @@ public class PollService {
 			
 			if (poll != null) {
 				// TODO Messaging Event --> Created poll
-				System.out.println("Poll created: " + poll.toString());
+				messageSender.publishPollEvent(Topics.POLL_OPENED, poll);
 			}
 			
 			return poll;

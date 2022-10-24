@@ -1,6 +1,6 @@
 package group4.feedapp.API.dao;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Collection;
 
 import javax.persistence.EntityManager;
@@ -51,8 +51,8 @@ public class PollDAOImplementation implements PollDAO {
 	}
 
 	@Override
-	public Poll createPoll(String question, int noCount, int yesCount, LocalDateTime startTime,
-			LocalDateTime endTime, boolean isPublic, int status, String accessCode, FAUser creator) {
+	public Poll createPoll(String question, int noCount, int yesCount, Date startTime,
+			Date endTime, boolean isPublic, int status, String accessCode, FAUser creator) {
 		EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         
