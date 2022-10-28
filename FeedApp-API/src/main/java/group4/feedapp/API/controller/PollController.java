@@ -87,6 +87,7 @@ public class PollController {
         return new ResponseEntity<>(null, HttpStatus.METHOD_NOT_ALLOWED);
     }
     
+    @CrossOrigin(origins = "http://127.0.0.1:5173")
     @PostMapping("/polls/{id}")
     public ResponseEntity<Poll> voteOnPoll(@RequestBody Vote vote, @PathVariable Long id) {
 

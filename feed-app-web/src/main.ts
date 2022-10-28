@@ -4,11 +4,11 @@ import {createRouter, createWebHistory} from 'vue-router'
 
 import "./assets/main.css";
 import SearchPage from "./components/SearchPage.vue";
-import VotingPoll from "./components/VotingPoll.vue";
+import Vote from "./components/Vote.vue";
 
 const routes = [
     {path: '/', component: SearchPage},
-    {path: '/vote', component: VotingPoll}
+    {path: '/poll/:accessCode', component: Vote, props: true}
 ];
 
 const router = createRouter({
