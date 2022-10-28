@@ -36,8 +36,8 @@ public class PopulateDatabase {
         
         // Test data
 		FAUser user = new FAUser("simon@gmail.com", "test", "Simon", true);
-		Poll poll1 = new Poll("Are you sick and tired?", 0, 0, null, null, true, 0, "#sick", user);
-		Poll poll2 = new Poll("Do you like America?", 0, 0, null, null, false, 0, "#america", user);
+		Poll poll1 = new Poll("Are you sick and tired?", 0, 0, null, null, true, 0, "ABCDEF", user);
+		Poll poll2 = new Poll("Do you like America?", 0, 0, null, null, false, 0, "AMERICA", user);
 		IoTDevice iot1 = new IoTDevice("IoT Device 1", poll1);
 		IoTDevice iot2 = new IoTDevice("IoT Device 2", poll1);
 		

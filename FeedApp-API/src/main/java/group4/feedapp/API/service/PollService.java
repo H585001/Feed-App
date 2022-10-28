@@ -162,8 +162,6 @@ public class PollService {
 			return vote;
 		}else {
 			System.out.println("Vote error");
-			System.out.println("Vote: " + vote);
-			System.out.println("Poll: " + poll);
 		}
 		return null;
 	}
