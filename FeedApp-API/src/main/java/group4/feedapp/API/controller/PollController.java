@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +33,8 @@ public class PollController {
 		Collection<Poll> polls = pollService.getAllPolls();
         return new ResponseEntity<>(polls, HttpStatus.OK);
     }
-
+	
+	@CrossOrigin(origins = "http://127.0.0.1:5173")
     @GetMapping("/polls/access/{code}")
     public ResponseEntity<Poll> getPoll(@PathVariable String code) {
 
@@ -46,6 +48,7 @@ public class PollController {
         return new ResponseEntity<>(poll, HttpStatus.OK);
     }
     
+    @CrossOrigin(origins = "http://127.0.0.1:5173")
     @GetMapping("/polls/{id}")
     public ResponseEntity<Poll> getPoll(@PathVariable Long id) {
 
