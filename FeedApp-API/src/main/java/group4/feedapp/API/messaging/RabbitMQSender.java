@@ -19,8 +19,8 @@ public class RabbitMQSender{
 		boolean success = true;
 		try {
 			message = new ObjectMapper().writeValueAsString(poll); // Converting the Poll to json
-			rabbitTemplate.convertAndSend(topic.toString(), message);
-		} catch (JsonProcessingException e) {
+			rabbitTemplate.convertAndSend(MessagingConfig.POLL_EVENT_EXCHANGE, topic.toString(), message);
+		} catch (Exception e) {
 			e.printStackTrace();
 			success = false;
 		}

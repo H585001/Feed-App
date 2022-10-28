@@ -51,7 +51,6 @@ public class PollService {
 			poll = pollDAO.createPoll(poll);
 			
 			if (poll != null) {
-				// TODO Messaging Event --> Created poll
 				messageSender.publishPollEvent(Topics.POLL_OPENED, poll);
 			}
 			
@@ -60,6 +59,11 @@ public class PollService {
 		
 		return null;
 			
+	}
+	
+	public void checkForClosedPolls(){
+		//TODO Check if some polls have been closed/expired
+		// Publish results on Topics.POLL_CLOSED
 	}
 	
 	public Collection<Poll> getAllPolls(){
@@ -114,7 +118,6 @@ public class PollService {
 	}
 	
 	public Vote voteOnPoll(Long pollId, Long userId, Vote vote) {
-		
 		// User is only able to vote on the poll if:
 		// - vote, poll and voter != null
 		// - The poll is open (status == 1)
