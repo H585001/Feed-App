@@ -34,7 +34,7 @@ public class MessagingConfig {
 
 	@Bean
 	Binding closedPollsQueueBinding(Queue closedPollsQueue, DirectExchange exchange) {
-		return BindingBuilder.bind(closedPollsQueue).to(exchange).with(Topics.POLL_OPENED.toString());
+		return BindingBuilder.bind(closedPollsQueue).to(exchange).with(Topics.POLL_CLOSED.toString());
 	}
 
 }
