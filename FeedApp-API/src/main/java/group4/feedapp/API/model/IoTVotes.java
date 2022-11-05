@@ -73,4 +73,8 @@ public class IoTVotes {
 		this.iotVotePoll = iotVotePoll;
 	}
 
+	@Override
+	public String toString() {
+		return "IoTVotes [noCount=" + noCount + ", yesCount=" + yesCount + "]";
+	}
 }

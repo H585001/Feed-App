@@ -102,7 +102,12 @@ public class PollDAOImplementation implements PollDAO {
 			TypedQuery<Poll> query = em.createQuery(
 					"SELECT p FROM Poll p WHERE p.accessCode = :code", Poll.class);
 			query.setParameter("code", code);
-			poll = query.getSingleResult();
+			try {
+				poll = query.getSingleResult();
+			}catch(Throwable e){
+				poll = null;
+				System.out.println("Invalid Access code!");
+			}
 		} finally {
 			em.close();
 		}

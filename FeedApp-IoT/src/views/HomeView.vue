@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import TheWelcome from "../components/TheWelcome.vue";
+import IoT from "../components/IoT.vue";
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <IoT />
   </main>
 </template>
