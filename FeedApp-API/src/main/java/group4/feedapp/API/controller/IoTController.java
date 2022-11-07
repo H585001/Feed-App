@@ -56,6 +56,7 @@ public class IoTController {
 		return new ResponseEntity<>(device, HttpStatus.OK);
 	}
 	
+	@CrossOrigin(origins = "http://127.0.0.1:5173")
 	@GetMapping("/iot/{id}/poll")
 	public ResponseEntity<Poll> getConnectedPoll(@PathVariable Long id) {
 		IoTDevice device = deviceService.getDevice(id);
@@ -65,6 +66,7 @@ public class IoTController {
 		return new ResponseEntity<>(device.getLinkedPoll(), HttpStatus.OK);
 	}
 	
+	@CrossOrigin(origins = "http://127.0.0.1:5173")
 	@PostMapping("/iot/{id}/vote")
 	public ResponseEntity<Poll> iotVoteOnPoll(@PathVariable Long id, @RequestBody IoTVotes votes) {
 		IoTDevice device = deviceService.getDevice(id);
