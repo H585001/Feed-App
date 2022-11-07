@@ -9,3 +9,12 @@ export type Poll = {
     accessCode: string;
     public: boolean;
 };
+
+export type FAUser = {
+    id: number;
+    email: string;
+    password: number;
+    name: number;
+    isAdmin: Date;
+};
+

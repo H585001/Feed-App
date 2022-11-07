@@ -1,7 +1,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import VotingPoll from './VotingPoll.vue'
-import type {Poll} from '../assets/Poll'
+import type {Poll} from '../assets/Entities'
 
     export default defineComponent ({
         components: {

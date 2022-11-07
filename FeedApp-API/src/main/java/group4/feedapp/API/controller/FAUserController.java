@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +18,7 @@ import group4.feedapp.API.model.Poll;
 import group4.feedapp.API.service.FAUserService;
 import group4.feedapp.API.service.PollService;
 
+@CrossOrigin(origins = "http://127.0.0.1:5173")
 @RestController
 public class FAUserController {
 	private final FAUserService userService;
@@ -39,6 +41,19 @@ public class FAUserController {
 
         if (user == null) {
             System.out.println(String.format("User with the id  \"%s\" not found!", id));
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+    
+    @GetMapping("/users/email/{email}")
+    public ResponseEntity<FAUser> getUser(@PathVariable String email) {
+
+        FAUser user = userService.getUserByEmail(email);
+
+        if (user == null) {
+            System.out.println(String.format("User with the e-mail  \"%s\" not found!", email));
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
 

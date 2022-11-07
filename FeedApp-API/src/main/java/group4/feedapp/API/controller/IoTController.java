@@ -11,6 +11,7 @@ import group4.feedapp.API.model.Poll;
 import group4.feedapp.API.service.IoTDeviceService;
 import group4.feedapp.API.service.PollService;
 
+@CrossOrigin(origins = "http://127.0.0.1:5173")
 @RestController
 public class IoTController {
 	

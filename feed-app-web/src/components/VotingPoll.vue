@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
-import type {Poll} from '../assets/Poll'
+import type {Poll} from '../assets/Entities'
     export default defineComponent ({
         data() {
             return {

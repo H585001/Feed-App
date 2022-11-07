@@ -18,6 +18,7 @@ import group4.feedapp.API.model.Vote;
 import group4.feedapp.API.service.FAUserService;
 import group4.feedapp.API.service.PollService;
 
+@CrossOrigin(origins = "http://127.0.0.1:5173")
 @RestController
 public class PollController {
 	private final PollService pollService;

@@ -21,6 +21,7 @@ import { defineComponent } from 'vue'
         <input name="username" v-model="username" placeholder="Username"/>
         <input type="password" name="password" v-model="password" placeholder="Password" />
         <button @click="signin">Sign in</button>
+        <p id="info">Don't have an account? <router-link id="registerLink" to="/register">Sign up here!</router-link></p>
     </div>
 </template>
 
@@ -57,5 +58,13 @@ button {
 
 button:hover {
     background-color: rgb(218, 29, 0);
+}
+#info{
+    text-align: center;
+    font-size: 10px;
+}
+#registerLink{
+    text-decoration: none;
+    color: red;
 }
 </style>
