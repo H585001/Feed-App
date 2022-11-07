@@ -29,7 +29,6 @@ button {
     border-radius: 4px;
     cursor: pointer;
     transition-duration: 0.3s;
-    font-weight: 550;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
 }
 
