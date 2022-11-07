@@ -28,6 +28,11 @@ public class PollDAOImplementation implements PollDAO {
 		EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         
+        // Access code has to be unique
+        if(this.readPollByCode(newPoll.getAccessCode()) != null) {
+        	return null;
+        }
+        
         boolean success = true;
 
 		try {
@@ -55,6 +60,11 @@ public class PollDAOImplementation implements PollDAO {
 			Date endTime, boolean isPublic, int status, String accessCode, FAUser creator) {
 		EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
+        
+        // Access code has to be unique
+        if(this.readPollByCode(accessCode) != null) {
+        	return null;
+        }
         
         boolean success = true;
         Poll poll = new Poll(question, noCount, yesCount, startTime, endTime, isPublic, status, accessCode, creator);

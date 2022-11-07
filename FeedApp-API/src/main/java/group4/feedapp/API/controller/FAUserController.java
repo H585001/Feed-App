@@ -100,6 +100,12 @@ public class FAUserController {
     	 Poll poll = pollService.addPoll(newPoll.getQuestion(), newPoll.getNoCount(), newPoll.getYesCount(), 
         		newPoll.getStartTime(), newPoll.getEndTime(),newPoll.isPublic(), newPoll.getStatus(), 
         		newPoll.getAccessCode(), creator);
+    	 
+    	 if (poll == null) {
+             System.out.println(String.format("Invalid input for poll", id));
+             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+         }
+    	 
     	 return new ResponseEntity<>(poll, HttpStatus.OK);
         
     }

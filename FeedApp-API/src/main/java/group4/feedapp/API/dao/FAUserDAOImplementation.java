@@ -59,6 +59,11 @@ public class FAUserDAOImplementation implements FAUserDAO {
         EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
         
+        // Email has to be unique
+        if(this.readUserByEmail(email) != null) {
+        	return null;
+        }
+        
         boolean success = true;
         FAUser user = new FAUser(email, password, name, isAdmin);
 
