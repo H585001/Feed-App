@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import group4.feedapp.API.dao.FAUserDAO;
@@ -61,11 +62,6 @@ public class PollService {
 			
 	}
 	
-	public void checkForClosedPolls(){
-		//TODO Check if some polls have been closed/expired
-		// Publish results on Topics.POLL_CLOSED
-	}
-	
 	public Collection<Poll> getAllPolls(){
 		return pollDAO.readPolls();
 	}
@@ -104,11 +100,12 @@ public class PollService {
 			return null;
 		}
 		
-		// TODO check if the poll is being closed: Message Event --> Poll closed 
+		updatedPoll = pollDAO.updatePoll(id, updatedPoll);
+		// Check if the poll is being closed: Message Event --> Poll closed 
 		if (poll.getStatus() != 2 && updatedPoll.getStatus() == 2) {
-			System.out.println("Poll closed: " + poll.toString());
+			messageSender.publishPollEvent(Topics.POLL_CLOSED, updatedPoll);
 		}
-		return pollDAO.updatePoll(id, updatedPoll);
+		return updatedPoll;
 	}
 	
 	public Vote getUserVote(Long pollId, Long userId) {
@@ -185,6 +182,27 @@ public class PollService {
 	public Collection<Poll> getUserPolls(Long userId) {
 		FAUser user = userDAO.readUser(userId);
 		return pollDAO.getUserPolls(user);
+	}
+	
+	@Scheduled(fixedDelay = 30000) // Method is called with a fixed delay (in ms) between each invocation
+    public void closeExpiredPolls() {
+		System.out.println("Checking for expired polls...");
+		// Scheduled service that checks if polls have expired (endTime < now())
+        Collection<Poll> polls = this.getAllPolls();
+        for(Poll poll : polls) {
+        	Date endTime = poll.getEndTime();
+        	if(poll.getStatus() != 2 && endTime != null && endTime.getTime() < new Date().getTime()) {
+        		this.closePoll(poll);
+        	}
+        }
+    }
+	
+	 public boolean closePoll(Poll poll) {
+	    if(poll != null && poll.getStatus() != 2) {
+	    	poll.setStatus(2);
+	    	return this.updatePoll(poll.getId(), poll) != null;
+	    }
+	    return false;
 	}
 
 }

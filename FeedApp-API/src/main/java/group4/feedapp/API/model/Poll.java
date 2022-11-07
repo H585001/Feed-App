@@ -195,7 +195,7 @@ public class Poll {
 	public String toString() {
 		return "Poll [id=" + id + ", question=" + question + ", noCount=" + noCount + ", yesCount=" + yesCount
 				+ ", startTime=" + startTime + ", endTime=" + endTime + ", isPublic=" + isPublic + ", status=" + status
-				+ ", accessCode=" + accessCode + ", creator=" + creator.getName();
+				+ ", accessCode=" + accessCode + "]";
 	}
 
 }
