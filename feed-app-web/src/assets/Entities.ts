@@ -13,8 +13,8 @@ export type Poll = {
 export type FAUser = {
     id: number;
     email: string;
-    password: number;
-    name: number;
-    isAdmin: Date;
+    password: string;
+    name: string;
+    isAdmin: boolean;
 };
 

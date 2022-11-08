@@ -17,8 +17,11 @@ import type {Poll} from '../assets/Entities'
 
 <template>
     <h2>{{currentPoll?.question}}</h2>
-    <div id="pollClosed" v-if="!currentPoll?.public || currentPoll.status == 0">
-        <p>This poll is not public, or has not yet started</p>
+    <div id="pollClosed" v-if="!currentPoll?.public">
+        <p>This poll is not public. Private polls are only available for logged in users</p>
+    </div>
+    <div id="pollClosed" v-else-if="currentPoll.status != 1">
+        <p>This poll is not open </p>
     </div>
     <div id="pollOpen" v-else>
         <p>Yes Votes: {{currentPoll?.yesCount}}</p>
