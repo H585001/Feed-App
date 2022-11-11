@@ -25,7 +25,7 @@ public class PopulateDatabase {
         populateDatabase();
         
         FAUserDAO userDAO = new FAUserDAOImplementation();
-        userDAO.createUser("jens@ymail.com", "hei", "Jens", false);
+        userDAO.createUser("jens@ymail.com", "testing", "Jens", false);
         
         Collection<FAUser> users = userDAO.readUsers();
         users.forEach(u -> System.out.println(u));
@@ -41,12 +41,12 @@ public class PopulateDatabase {
         Date start = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(start);
-        c.add(Calendar.DATE, 7);
+        c.add(Calendar.DATE, 100);
         Date end = c.getTime();
         
-		FAUser user = new FAUser("simon@gmail.com", "test", "Simon", true);
-		Poll poll1 = new Poll("Are you sick and tired?", 0, 0, start, end, true, 0, "ABCDEF", user);
-		Poll poll2 = new Poll("Do you like America?", 0, 0, start, end, false, 0, "AMERICA", user);
+		FAUser user = new FAUser("simon@gmail.com", "testing", "Simon", true);
+		Poll poll1 = new Poll("Are you sick and tired?", 0, 0, null, null, true, 1, "ABCDEF", user);
+		Poll poll2 = new Poll("Do you like America?", 0, 0, start, end, false, 1, "AMERICA", user);
 		IoTDevice iot1 = new IoTDevice("IoT Device 1", poll1);
 		IoTDevice iot2 = new IoTDevice("IoT Device 2", poll1);
 		

@@ -87,7 +87,7 @@ import { routerKey, useRouter } from 'vue-router'
                                 admin: false
                             })
                     }).then((response) => response.json())
-                        console.log("Success!")
+                        alert("User created!")
                         this.$router.push("/login")
                     } catch(err){
                         console.log("Not registered!")

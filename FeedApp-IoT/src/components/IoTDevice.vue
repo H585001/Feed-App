@@ -15,13 +15,13 @@ import { defineComponent } from 'vue'
             this.yesVotes = 0;
             this.noVotes = 0;
         },
-        sendVotes() {
+        async sendVotes() {
             console.log("Yes: " + this.yesVotes);
             console.log("No: " + this.noVotes);
             if (Object.keys(this.poll).length === 0){
               console.log("Device is not connected to a poll")
             }else{
-              fetch('http://localhost:8080/iot/' + this.id + "/vote", 
+              await fetch('http://localhost:8080/iot/' + this.id + "/vote", 
             {
               method: 'POST',
               headers: {
@@ -34,12 +34,12 @@ import { defineComponent } from 'vue'
             }).then((response) => response.json())
 
             this.reset();
-            this.connect();
+            await this.connect();
             }
         },
-        connect() {
+        async connect() {
             console.log("Connecting to poll... ");
-            fetch('http://localhost:8080/iot/' + this.id + "/poll")
+            await fetch('http://localhost:8080/iot/' + this.id + "/poll")
                 .then((response) => response.json())
                 .then((data) => this.poll = data);
         },

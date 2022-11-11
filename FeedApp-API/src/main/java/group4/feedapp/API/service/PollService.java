@@ -184,7 +184,7 @@ public class PollService {
 		return pollDAO.getUserPolls(user);
 	}
 	
-	@Scheduled(fixedDelay = 600000) // Method is called with a fixed delay (in ms) between each invocation
+	@Scheduled(fixedDelay = 60000) // Method is called with a fixed delay (in ms) between each invocation
     public void closeExpiredPolls() {
 		// Scheduled service that checks if polls have expired (endTime < now())
         Collection<Poll> polls = this.getAllPolls();
