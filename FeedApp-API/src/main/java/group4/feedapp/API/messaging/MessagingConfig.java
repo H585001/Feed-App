@@ -12,12 +12,12 @@ public class MessagingConfig {
 	// Creating queues for poll events
 	@Bean
 	Queue openedPollsQueue() {
-		return new Queue(Topics.POLL_OPENED.toString(), false);
+		return new Queue(Topics.POLL_OPENED.toString(), true);
 	}
 
 	@Bean
 	Queue closedPollsQueue() {
-		return new Queue(Topics.POLL_CLOSED.toString(), false);
+		return new Queue(Topics.POLL_CLOSED.toString(), true);
 	}
 	
 	// Creating messaging exchange
