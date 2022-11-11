@@ -39,7 +39,7 @@ import { routerKey, useRouter } from 'vue-router'
                 }
 
                 if(this.email == ""){
-                    this.emailError = "Not a valid name!"
+                    this.emailError = "Not a valid e-mail!"
                     valid = false
                 }else{
                     this.emailError = ""
