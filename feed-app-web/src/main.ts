@@ -14,7 +14,7 @@ const routes = [
     {path: '/', component: SearchPage},
     {path: '/poll/:accessCode', component: Vote, props: true},
     {path: '/login', component: Login},
-    {path: '/dashboard', component: Dashboard},
+    {path: '/dashboard/:userId', component: Dashboard, props:true},
     {path: '/register', component: Register},
     {path: '/profile/:userId', component: Profile, props: true}
 ];

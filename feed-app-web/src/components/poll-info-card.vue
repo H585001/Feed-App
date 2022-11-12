@@ -1,8 +1,14 @@
 <script lang="ts">
+import type { Poll } from '@/assets/Entities';
 import { defineComponent } from 'vue'
     export default defineComponent ({
         data() {
             return {
+            }
+        },
+        props: {
+            poll: {
+                type: Object as () => Poll
             }
         }
     })
@@ -10,15 +16,15 @@ import { defineComponent } from 'vue'
 
 <template>
     <div class="grid-item">
-        <h3>Question</h3>
+        <h2>{{poll?.question}}</h2>
         <table>
             <tr>
                 <th>Yes:</th>
-                <th class="count">-------------------------</th>
+                <th>{{poll?.yesCount}}</th>
             </tr>
             <tr>
                 <th>No:</th>
-                <th class="count2">-----------------------------------------------------------------</th>
+                <th>{{poll?.noCount}}</th>
             </tr>
         </table>
     </div>

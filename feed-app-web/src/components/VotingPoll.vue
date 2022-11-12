@@ -30,3 +30,17 @@ import type {Poll} from '../assets/Entities'
         <button @click="$emit('vote', 'no')">No</button>
     </div>
 </template>
+
+<style scoped>
+button {
+    background-color: rgb(255, 60, 30);
+    border: none;
+    color: white;
+    margin: 10px;
+    padding: 10px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition-duration: 0.3s;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+</style>

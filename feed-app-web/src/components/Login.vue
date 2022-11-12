@@ -1,16 +1,31 @@
 <script lang="ts">
+import { SERVER_URL } from '@/assets/config';
+import type { FAUser } from '@/assets/Entities';
 import { defineComponent } from 'vue'
     export default defineComponent ({
         data() {
             return {
-                username: "",
-                password: ""
+                email: "",
+                password: "",
+                user: {} as FAUser
             }
         },
         methods: {
-            signin() {
-                console.log("username: " + this.username + "\n password: " + this.password);
-            }
+            async signin() {
+                console.log("E-mail: " + this.email + "\nPassword: " + this.password);
+                await this.getUserByEmail(this.email)
+            },
+            async getUserByEmail(email:String) {
+                try{
+                    const response = await fetch(SERVER_URL + '/users/email/' + email)
+                    const data = await response.json();
+                    this.user = data
+                    console.log(this.user)
+                    this.$router.push('/dashboard/' + this.user.id)
+                }catch(err){
+                    alert("E-mail and password doesn't match!")
+                }
+            },
         }
     })
 </script>
@@ -18,7 +33,7 @@ import { defineComponent } from 'vue'
 <template>
     <div id="signin">
         <h1>Sign In</h1>
-        <input name="username" v-model="username" placeholder="Username"/>
+        <input name="email" v-model="email" placeholder="E-mail"/>
         <input type="password" name="password" v-model="password" placeholder="Password" />
         <button @click="signin">Sign in</button>
         <p id="info">Don't have an account? <router-link id="registerLink" to="/register">Sign up here!</router-link></p>
