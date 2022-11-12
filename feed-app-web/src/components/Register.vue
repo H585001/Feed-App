@@ -3,6 +3,8 @@ import type {FAUser} from '../assets/Entities'
 import { defineComponent } from 'vue'
 import { validate } from '@babel/types'
 import { routerKey, useRouter } from 'vue-router'
+import { SERVER_URL } from '@/assets/config'
+
     export default defineComponent ({
         data() {
             return {
@@ -21,7 +23,7 @@ import { routerKey, useRouter } from 'vue-router'
         methods: {
             async getUserByEmail(email:String) {
                 try{
-                    const response = await fetch('http://localhost:8080/users/email/' + email)
+                    const response = await fetch(SERVER_URL + '/users/email/' + email)
                     const data = await response.json();
                     this.emailInUse = true
                 }catch(err){
@@ -74,7 +76,7 @@ import { routerKey, useRouter } from 'vue-router'
                 if(this.validInput){
                     console.log("Valid input")
                     try{
-                        fetch('http://localhost:8080/users', 
+                        fetch(SERVER_URL + '/users', 
                     {
                         method: 'POST',
                         headers: {

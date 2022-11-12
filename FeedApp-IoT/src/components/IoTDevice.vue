@@ -1,5 +1,7 @@
 <script lang="ts">
 import type {Poll} from '../assets/Poll'
+import {SERVER_URL} from '../assets/config'
+
 import { defineComponent } from 'vue'
     export default defineComponent ({
     data() {
@@ -21,7 +23,7 @@ import { defineComponent } from 'vue'
             if (Object.keys(this.poll).length === 0){
               console.log("Device is not connected to a poll")
             }else{
-              await fetch('http://localhost:8080/iot/' + this.id + "/vote", 
+              await fetch(SERVER_URL + '/iot/' + this.id + "/vote", 
             {
               method: 'POST',
               headers: {
@@ -39,7 +41,7 @@ import { defineComponent } from 'vue'
         },
         async connect() {
             console.log("Connecting to poll... ");
-            await fetch('http://localhost:8080/iot/' + this.id + "/poll")
+            await fetch(SERVER_URL + '/iot/' + this.id + "/poll")
                 .then((response) => response.json())
                 .then((data) => this.poll = data);
         },

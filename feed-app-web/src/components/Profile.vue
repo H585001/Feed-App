@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import UserProfile from './UserProfile.vue'
 import type {FAUser} from '../assets/Entities'
+import {SERVER_URL} from '../assets/config'
 
     export default defineComponent ({
         components: {
@@ -22,7 +23,7 @@ import type {FAUser} from '../assets/Entities'
         methods: {
             fetchData() {
                 try{
-                    fetch('http://localhost:8080/users/' + this.userId)
+                    fetch(SERVER_URL + '/users/' + this.userId)
                     .then((response) => response.json())
                     .then((data) => this.user = data);
                     this.loaded = true
@@ -33,7 +34,7 @@ import type {FAUser} from '../assets/Entities'
             updateUser(name:string, pwd:string) {
                 if(this.loaded){                    
                     try{
-                        fetch('http://localhost:8080/users/' + this.user.id, 
+                        fetch(SERVER_URL + '/users/' + this.user.id, 
                     {
                         method: 'PUT',
                         headers: {

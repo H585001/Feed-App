@@ -2,6 +2,7 @@
 import { defineComponent } from 'vue'
 import VotingPoll from './VotingPoll.vue'
 import type {Poll} from '../assets/Entities'
+import { SERVER_URL } from '@/assets/config'
 
     export default defineComponent ({
         components: {
@@ -19,7 +20,7 @@ import type {Poll} from '../assets/Entities'
         },
         methods: {
             fetchData() {
-                fetch('http://localhost:8080/polls/access/' + this.accessCode)
+                fetch(SERVER_URL + '/polls/access/' + this.accessCode)
                 .then((response) => response.json())
                 .then((data) => this.poll = data);
             },
@@ -31,7 +32,7 @@ import type {Poll} from '../assets/Entities'
                 else
                     ans = false;
 
-                fetch('http://localhost:8080/polls/' + this.poll.id, 
+                fetch(SERVER_URL + '/polls/' + this.poll.id, 
                 {
                     method: 'POST',
                     headers: {
