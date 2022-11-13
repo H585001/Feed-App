@@ -11,7 +11,8 @@ import type {Poll} from '../assets/Entities'
             currentPoll: {
                 type: Object as () => Poll
             }
-        }
+        },
+        emits: ["vote"]
     })
 </script>
 

@@ -15,7 +15,7 @@ import { defineComponent } from 'vue'
 </script>
 
 <template>
-    <div class="grid-item">
+    <div class="grid-item" @click="$emit('showDetails', poll)">
         <h2>{{poll?.question}}</h2>
         <table>
             <tr>

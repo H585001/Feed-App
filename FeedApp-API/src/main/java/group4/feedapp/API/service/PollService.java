@@ -100,6 +100,7 @@ public class PollService {
 			return null;
 		}
 		
+		updatedPoll.setCreator(poll.getCreator());
 		updatedPoll = pollDAO.updatePoll(id, updatedPoll);
 		// Check if the poll is being closed: Message Event --> Poll closed 
 		if (poll.getStatus() != 2 && updatedPoll.getStatus() == 2) {

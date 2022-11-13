@@ -13,7 +13,9 @@ import { MODULEDECLARATION_TYPES } from '@babel/types';
                 plannedPolls: [] as Poll[],
                 activePolls: [] as Poll[],
                 closedPolls: [] as Poll[],
-                showPollEditor: false
+                showPollEditor: false,
+                detailsShown: false,
+                selectedPoll: {} as Poll
             }
         },
         props: ['userId'],
@@ -32,6 +34,7 @@ import { MODULEDECLARATION_TYPES } from '@babel/types';
                     .then((data) => this.user = data);
                 }catch(err){
                     alert("Dashboard is only available for logged in users!")
+                    this.$router.push("/login")
                 }
             },
             async fetchPolls() {
@@ -39,6 +42,11 @@ import { MODULEDECLARATION_TYPES } from '@babel/types';
                     await fetch(SERVER_URL + '/users/' + this.userId + "/polls")
                     .then((response) => response.json())
                     .then((data) => this.userPolls = data);
+                    
+                    // Resetting poll lists
+                    this.plannedPolls = []
+                    this.activePolls = []
+                    this.closedPolls = []
 
                     this.userPolls.forEach(poll =>{
                         let status = poll.status;
@@ -58,55 +66,41 @@ import { MODULEDECLARATION_TYPES } from '@babel/types';
                 await this.fetchUser();
                 await this.fetchPolls();
 
+            },
+            showDetails(poll : Poll){
+                this.selectedPoll = poll;
+                this.detailsShown = true;
+                this.showPollEditor = true;
+            },
+            closeDetails(){
+                this.showPollEditor = false;
+                this.detailsShown = false;
             }
         }
     })
 </script>
-<!--
-<template>
-    <h2>Planned Polls</h2>
-    <div class="grid-container">
-        <PollCard/>
-        <PollCard/>
-        <PollCard/>
-    </div>
-    <hr>
-    <h2>Active Polls</h2>
-    <div class="grid-container">
-        <PollCard/>
-        <PollCard/>
-        <PollCard/>
-    </div>
-    <hr>
-    <h2>Closed Polls</h2>
-    <div class="grid-container">
-        <PollCard/>
-        <PollCard/>
-        <PollCard/>
-    </div>
-</template>
--->
 
 <template>
     <div>
         <button @click="showPollEditor = true">New Poll</button>
     </div>
 
-    <div class="modal" v-if="showPollEditor" @close="showPollEditor = false">
-        <PollEditor />
+    <div class="modal" v-if="showPollEditor">
+        <PollEditor v-if="detailsShown" :userId="userId" :selectedPoll="selectedPoll" :newPoll="false" @close="closeDetails" @pollUpdated="fetchPolls" />
+        <PollEditor v-else :userId="userId" :newPoll="true" @close="showPollEditor = false" @pollCreated="fetchPolls"/>
     </div>
 
     <h2>Planned Polls</h2>
     <div class="grid-container">
-        <PollCard v-for="poll in plannedPolls" :poll="poll"/>
+        <PollCard v-for="poll in plannedPolls" :poll="poll" @showDetails="showDetails"/>
     </div>
     <h2>Active Polls</h2>
     <div class="grid-container">
-        <PollCard v-for="poll in activePolls" :poll="poll"/>
+        <PollCard v-for="poll in activePolls" :poll="poll" @showDetails="showDetails"/>
     </div>
     <h2>Closed Polls</h2>
     <div class="grid-container">
-        <PollCard v-for="poll in closedPolls" :poll="poll"/>
+        <PollCard v-for="poll in closedPolls" :poll="poll" @showDetails="showDetails"/>
     </div>
 
 </template>

@@ -117,7 +117,7 @@ public class FAUserController {
         		newPoll.getAccessCode(), creator);
     	 
     	 if (poll == null) {
-             System.out.println(String.format("Invalid input for poll", id));
+             System.out.println("Invalid input for poll");
              return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
          }
     	 

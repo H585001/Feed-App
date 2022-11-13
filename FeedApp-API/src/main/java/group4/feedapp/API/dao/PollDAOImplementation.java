@@ -151,7 +151,7 @@ public class PollDAOImplementation implements PollDAO {
 				poll.setAccessCode(updatedPoll.getAccessCode());
 				poll.setCreator(updatedPoll.getCreator());
 				poll.setStartTime(updatedPoll.getStartTime());
-				poll.setEndTime(updatedPoll.getStartTime());
+				poll.setEndTime(updatedPoll.getEndTime());
 				poll.setStatus(updatedPoll.getStatus());
 				poll.setIotVotes(updatedPoll.getIotVotes());
 				poll.setUserVotes(updatedPoll.getUserVotes());
