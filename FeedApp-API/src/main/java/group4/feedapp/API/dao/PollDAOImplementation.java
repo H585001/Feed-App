@@ -27,7 +27,6 @@ public class PollDAOImplementation implements PollDAO {
 	public Poll createPoll(Poll newPoll) {
 		EntityManager em = emf.createEntityManager();
         EntityTransaction tx = em.getTransaction();
-        
         // Access code has to be unique
         if(this.readPollByCode(newPoll.getAccessCode()) != null) {
         	return null;
@@ -52,6 +51,11 @@ public class PollDAOImplementation implements PollDAO {
 		if(!success){
 			return null;
 		};
+		
+		// Adding a unique access code for the poll: "POLL-{id}"
+		newPoll.setAccessCode("POLL-" + newPoll.getId());
+		updatePoll(newPoll.getId(), newPoll);
+		
 		return newPoll;
 	}
 

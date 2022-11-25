@@ -11,6 +11,7 @@ import type {Poll} from '../assets/Entities'
                 accessCode: "",
                 public: false,
                 editPoll: true,
+                errorMsg: ""
             }
         },
         emits: ['close', 'pollCreated', 'pollUpdated'],
@@ -65,11 +66,21 @@ import type {Poll} from '../assets/Entities'
                         alert("Registration error!")
                     }
                 }else{
-                    console.log("Invalid input")
+                    alert("Invalid input: " + this.errorMsg)
                 }    
             },
             validInput(){
-                return this.question != "" && this.accessCode != ""
+                let valid = true;
+                if(this.question == ""){
+                    valid = false;
+                    this.errorMsg = "Question can not be empty!"
+                }
+
+                if(valid){
+                    this.errorMsg = "";
+                }
+
+                return valid
             },
             async updatePoll(){
                 let status = 0
@@ -89,7 +100,6 @@ import type {Poll} from '../assets/Entities'
                             accessCode: this.accessCode,
                             public: this.public
                             })
-                console.log(json)
 
                 if(await this.validInput()){
                     console.log("Valid input")
@@ -147,8 +157,6 @@ import type {Poll} from '../assets/Entities'
         <input type="datetime-local" name="startTime" v-model="startTime"/>
         <label>End time</label>
         <input type="datetime-local" name="endTime" v-model="endTime"/>
-        <label>Access Code</label>
-        <input name="accessCode" v-model="accessCode" placeholder="Access code"/>
         <label>Public</label>
         <input type="checkbox" name="public" @click="public = !public"/>
 
