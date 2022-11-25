@@ -14,7 +14,7 @@ import type {Poll} from '../assets/Entities'
                 errorMsg: ""
             }
         },
-        emits: ['close', 'pollCreated', 'pollUpdated'],
+        emits: ['close', 'pollCreated', 'pollUpdated', 'pollDeleted'],
         props: ['userId', 'newPoll', 'selectedPoll'],
         mounted() {
             if(this.newPoll){
@@ -122,6 +122,23 @@ import type {Poll} from '../assets/Entities'
                 }else{
                     console.log("Invalid input")
                 }
+            },
+            async deletePoll(){
+                try{
+                        fetch(SERVER_URL + '/polls/' + this.selectedPoll?.id, 
+                    {
+                        method: 'DELETE',
+                        headers: {
+                        'Content-Type': 'application/json',
+                        }
+                    }).then((response) => response.json())
+                        alert("Poll deleted!")
+                        this.$emit('close')
+                        this.$emit('pollDeleted')
+
+                    } catch(err){
+                        alert("Delete error!")
+                    }
             }
         }
     })
@@ -129,7 +146,7 @@ import type {Poll} from '../assets/Entities'
 
 <template>
     <div v-if="editPoll" class="pollForm">
-        <h2>Poll Results</h2>
+        <h2>Poll Results</h2> <button class="closeBtn" @click="$emit('close')">X</button>
         <p>{{question}}</p>
         <p>Yes: {{selectedPoll?.yesCount}}</p>
         <p>No: {{selectedPoll?.noCount}}</p>
@@ -145,12 +162,12 @@ import type {Poll} from '../assets/Entities'
         <input type="checkbox" name="public" v-model="public" @click="public = !public"/>
 
         <button @click="updatePoll">Save changes</button>
-        <button @click="$emit('close')">Close editor</button>
         <button v-if="selectedPoll?.status == 1" @click="$router.push('/poll/' + accessCode)">Go to voting!</button>
+        <button class="deleteBtn" @click="deletePoll">DELETE</button>
     </div>
     
     <div v-else class="pollForm">
-        <h1>Create poll</h1>
+        <h1>Create poll</h1> <button class="closeBtn" @click="$emit('close')">X</button>
         <label>Question</label>
         <input name="question" v-model="question" placeholder="Yes or No question"/>
         <label>Start time</label>
@@ -161,7 +178,6 @@ import type {Poll} from '../assets/Entities'
         <input type="checkbox" name="public" @click="public = !public"/>
 
         <button @click="createPoll">Create poll</button>
-        <button @click="$emit('close')">Close editor</button>
     </div>
 </template>
 
@@ -176,12 +192,18 @@ import type {Poll} from '../assets/Entities'
     box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     border: 2px solid black;
+    position: relative;
 }
 input {
     display: block;
     padding: 10px 2px;
     margin: 16px auto;
     width: 300px;
+    border-radius: 4px;
+}
+input[type="checkbox"] {
+    margin: 2px;
+    width: 20px;
     border-radius: 4px;
 }
 button {
@@ -194,5 +216,16 @@ button {
     cursor: pointer;
     transition-duration: 0.3s;
     box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+.closeBtn {
+    position:absolute;
+    top: 0;
+    right:0;
+    font-weight: bold;
+    margin: 2px;
+    padding: 5px 5px;
+}
+.deleteBtn {
+    font-weight: bold;
 }
 </style>

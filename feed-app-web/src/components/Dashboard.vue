@@ -86,7 +86,7 @@ import { MODULEDECLARATION_TYPES } from '@babel/types';
     </div>
 
     <div class="modal" v-if="showPollEditor">
-        <PollEditor v-if="detailsShown" :userId="userId" :selectedPoll="selectedPoll" :newPoll="false" @close="closeDetails" @pollUpdated="fetchPolls" />
+        <PollEditor v-if="detailsShown" :userId="userId" :selectedPoll="selectedPoll" :newPoll="false" @close="closeDetails" @pollUpdated="fetchPolls" @pollDeleted="fetchPolls" />
         <PollEditor v-else :userId="userId" :newPoll="true" @close="showPollEditor = false" @pollCreated="fetchPolls"/>
     </div>
 
