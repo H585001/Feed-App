@@ -1,5 +1,5 @@
 <script lang="ts">
-import ButtonSmall from './ui-elements/ButtonSmall.vue'
+import RedirectButton from './ui-elements/RedirectButton.vue'
 import { defineComponent } from 'vue'
     export default defineComponent ({
         data() {
@@ -8,7 +8,7 @@ import { defineComponent } from 'vue'
                 url: "/poll"
             }
         },
-        components: {ButtonSmall}
+        components: {RedirectButton}
     })
 </script>
 
@@ -16,7 +16,7 @@ import { defineComponent } from 'vue'
     <form id="accessCodeInputForm">
         <label for="accessCode" >Access Code</label>
         <input name="accessCode" v-model="text" placeholder="Access code"/> 
-        <ButtonSmall :accessCode="text" :url="url"></ButtonSmall>
+        <RedirectButton :parameters="text" :url="url">Join Poll!</RedirectButton>
     </form>
 </template>
 

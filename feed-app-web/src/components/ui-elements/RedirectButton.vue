@@ -1,21 +1,21 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
     export default defineComponent ({
-        name: 'ButtomSmall',
+        name: 'RedirectButton',
         props: {
-            accessCode: String,
+            parameters: String,
             url: String
         },
         methods: {
             redirect() {
-                this.$router.push(this.url + "/" + this.accessCode);
+                this.$router.push(this.url + "/" + this.parameters);
             }
         }
     })
 </script>
 
 <template>
-    <button @click="redirect">Join Poll</button>
+    <button @click="redirect"><slot></slot></button>
 </template>
 
 <style scoped>
