@@ -73,6 +73,29 @@ import { useAuthStore } from '@/assets/auth'
                     }
 
                 }
+            },
+            deleteUser() {
+                if(this.loaded){                    
+                    try{
+                        const token = (jwt_decode(localStorage.token) as any)
+                        this.axios.delete(SERVER_URL + '/users/' + token.userId, 
+                    {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${localStorage.token}`
+                        }
+                    }
+                    ).then((response) => response)
+                        this.feedback = "User deleted"
+                        localStorage.removeItem("token");
+                        this.$router.push("/");
+                    } catch(err){
+                        this.feedback = "Delete error!"
+                    }finally{
+                        alert(this.feedback)
+                    }
+
+                }
             }
         },
         computed: {
@@ -87,7 +110,22 @@ import { useAuthStore } from '@/assets/auth'
 
 <template>
     <p>Name: {{user.name}}</p>
+    <button class="deleteBtn" @click="deleteUser">Delete User</button>
     <div id="pollWrapper">
         <UserProfile :user = "getUser" @updateUser="updateUser" :feedback = "feedback"></UserProfile>
     </div>
 </template>
+
+<style scoped>
+button {
+    background-color: rgb(255, 60, 30);
+    border: none;
+    color: white;
+    margin: 10px;
+    padding: 10px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition-duration: 0.3s;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2);
+}
+</style>
