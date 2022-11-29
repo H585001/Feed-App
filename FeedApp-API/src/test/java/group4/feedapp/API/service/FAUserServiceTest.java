@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import group4.feedapp.API.dao.FAUserDAO;
@@ -29,7 +30,8 @@ public class FAUserServiceTest {
 	
 	@BeforeEach
     void setUp() {
-        userService = new FAUserService(userDAO);
+		PasswordEncoder encoder = new BCryptPasswordEncoder(11);
+        userService = new FAUserService(userDAO, encoder);
     }
 
 	@Test
