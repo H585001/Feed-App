@@ -5,8 +5,8 @@ import type {FAUser} from '../assets/Entities'
         data() {
             return {
                 name: this.user?.name,
-                password: this.user?.password,
-                repeatedPassword: this.user?.password,
+                password: "",
+                repeatedPassword: "",
                 nameError: "",
                 passwordError: "",
                 repeatedPasswordError: "",
@@ -50,7 +50,7 @@ import type {FAUser} from '../assets/Entities'
 </script>
 
 <template>
-    <div id="userForm" v-if="user?.id">
+    <div id="userForm">
         <h1>Change profile</h1>
         <label>Name</label>
         <input type="text" name="name" v-model="name" placeholder="Name"/>

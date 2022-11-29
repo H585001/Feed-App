@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import group4.feedapp.API.dao.FAUserDAO;
@@ -13,13 +14,16 @@ import group4.feedapp.API.model.FAUser;
 public class FAUserService {
 	private final FAUserDAO userDAO;
 	
+	private final PasswordEncoder passwordEncoder;
+	
 	@Autowired
-	public FAUserService(FAUserDAO userDAO) {
+	public FAUserService(FAUserDAO userDAO, PasswordEncoder passwordEncoder) {
 		this.userDAO = userDAO;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	public FAUser addUser(String email, String password, String name, boolean isAdmin) {
-		return userDAO.createUser(email, password, name, isAdmin);
+		return userDAO.createUser(email, passwordEncoder.encode(password), name, isAdmin);
 	}
 	
 	public Collection<FAUser> getAllUsers(){
@@ -43,6 +47,7 @@ public class FAUserService {
 	}
 	
 	public FAUser updateUser(Long id, FAUser newUser) {
+		newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
 		return userDAO.updateUser(id, newUser);
 	}
 }

@@ -5,10 +5,24 @@ import { defineComponent } from 'vue'
 import type { FAUser, Poll} from '@/assets/Entities';
 import { SERVER_URL } from '@/assets/config';
 import { MODULEDECLARATION_TYPES } from '@babel/types';
+import {useAuthStore} from '../assets/auth'
+import { storeToRefs } from 'pinia'
+import jwt_decode from "jwt-decode";
+
     export default defineComponent ({
+        setup() {
+            const auth = useAuthStore();
+            const {user, isAuthenticated, token} = storeToRefs(auth);
+            const { authenticationCheck } = auth;
+            return {
+                user,
+                isAuthenticated,
+                token,
+                authenticationCheck
+            };
+        },
         data() {
             return {
-                user: {} as FAUser,
                 userPolls: [] as Poll[],
                 plannedPolls: [] as Poll[],
                 activePolls: [] as Poll[],
@@ -18,30 +32,27 @@ import { MODULEDECLARATION_TYPES } from '@babel/types';
                 selectedPoll: {} as Poll
             }
         },
-        props: ['userId'],
         components: {
             PollCard,
             PollEditor
         },
         mounted() {
             this.initDashboard();
+            this.auth();
         },
         methods: {
-            async fetchUser() {
-                try{
-                    await fetch(SERVER_URL + '/users/' + this.userId)
-                    .then((response) => response.json())
-                    .then((data) => this.user = data);
-                }catch(err){
-                    alert("Dashboard is only available for logged in users!")
-                    this.$router.push("/login")
-                }
-            },
             async fetchPolls() {
+                console.log("Token: " + localStorage.token);
                 try{
-                    await fetch(SERVER_URL + '/users/' + this.userId + "/polls")
-                    .then((response) => response.json())
-                    .then((data) => this.userPolls = data);
+                    await this.axios.get(SERVER_URL + '/users/' + (jwt_decode(localStorage.token) as any).userId + "/polls", {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.token}`
+                        }
+                    }
+                    ).then((data) => {
+                        this.userPolls = data.data;
+                        console.log(data);
+                    });
                     
                     // Resetting poll lists
                     this.plannedPolls = []
@@ -63,7 +74,6 @@ import { MODULEDECLARATION_TYPES } from '@babel/types';
                 }
             },
             async initDashboard(){
-                await this.fetchUser();
                 await this.fetchPolls();
 
             },
@@ -75,6 +85,10 @@ import { MODULEDECLARATION_TYPES } from '@babel/types';
             closeDetails(){
                 this.showPollEditor = false;
                 this.detailsShown = false;
+            },
+            auth() {
+                if (!this.authenticationCheck())
+                    this.$router.push("/login")
             }
         }
     })
@@ -86,8 +100,8 @@ import { MODULEDECLARATION_TYPES } from '@babel/types';
     </div>
 
     <div class="modal" v-if="showPollEditor">
-        <PollEditor v-if="detailsShown" :userId="userId" :selectedPoll="selectedPoll" :newPoll="false" @close="closeDetails" @pollUpdated="fetchPolls" @pollDeleted="fetchPolls" />
-        <PollEditor v-else :userId="userId" :newPoll="true" @close="showPollEditor = false" @pollCreated="fetchPolls"/>
+        <PollEditor v-if="detailsShown" :userId="user.userId" :selectedPoll="selectedPoll" :newPoll="false" @close="closeDetails" @pollUpdated="fetchPolls" @pollDeleted="fetchPolls" />
+        <PollEditor v-else :userId="user.userId" :newPoll="true" @close="showPollEditor = false" @pollCreated="fetchPolls"/>
     </div>
 
     <h2>Planned Polls</h2>

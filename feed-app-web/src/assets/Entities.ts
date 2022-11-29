@@ -11,10 +11,8 @@ export type Poll = {
 };
 
 export type FAUser = {
-    id: number;
-    email: string;
-    password: string;
-    name: string;
-    isAdmin: boolean;
+    email: String;
+    name: String;
+    userId: number;
 };
 

@@ -1,11 +1,28 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import type {Poll} from '../assets/Entities'
+import {useAuthStore} from '../assets/auth'
+
     export default defineComponent ({
+        setup() {
+            const auth = useAuthStore();
+            const { authenticationCheck } = auth;
+            return {
+                authenticationCheck
+            };
+        },
         data() {
             return {
-                
+                isAuthenticated: false,
             }
+        },
+        methods: {
+            auth() {
+                this.isAuthenticated = this.authenticationCheck();
+            }
+        },
+        mounted() {
+            this.auth();
         },
         props: {
             currentPoll: {
@@ -18,10 +35,10 @@ import type {Poll} from '../assets/Entities'
 
 <template>
     <h2>{{currentPoll?.question}}</h2>
-    <div id="pollClosed" v-if="!currentPoll?.public">
+    <div id="pollClosed" v-if="!currentPoll?.public && !isAuthenticated">
         <p>This poll is not public. Private polls are only available for logged in users</p>
     </div>
-    <div id="pollClosed" v-else-if="currentPoll.status != 1">
+    <div id="pollClosed" v-else-if="currentPoll?.status != 1">
         <p>This poll is not open </p>
     </div>
     <div id="pollOpen" v-else>

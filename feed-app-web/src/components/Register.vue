@@ -21,15 +21,6 @@ import { SERVER_URL } from '@/assets/config'
             }
         },
         methods: {
-            async getUserByEmail(email:String) {
-                try{
-                    const response = await fetch(SERVER_URL + '/users/email/' + email)
-                    const data = await response.json();
-                    this.emailInUse = true
-                }catch(err){
-                    this.emailInUse = false
-                }
-            },
             async validateInput(){
                 let valid = true
 
@@ -42,14 +33,6 @@ import { SERVER_URL } from '@/assets/config'
 
                 if(this.email == ""){
                     this.emailError = "Not a valid e-mail!"
-                    valid = false
-                }else{
-                    this.emailError = ""
-                }
-
-                await this.getUserByEmail(this.email)
-                if(this.emailInUse){
-                    this.emailError = "E-mail is already in use!"
                     valid = false
                 }else{
                     this.emailError = ""
@@ -76,19 +59,18 @@ import { SERVER_URL } from '@/assets/config'
                 if(this.validInput){
                     console.log("Valid input")
                     try{
-                        fetch(SERVER_URL + '/users', 
+                        this.axios.post(SERVER_URL + '/users',
                     {
-                        method: 'POST',
-                        headers: {
+                        email: this.email,
+                        password: this.password,
+                        name: this.name,
+                        admin: false
+                    }, 
+                    {
+                    headers: {
                         'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                                email: this.email,
-                                password: this.password,
-                                name: this.name,
-                                admin: false
-                            })
-                    }).then((response) => response.json())
+                    }})
+                    .then((response) => response)
                         alert("User created!")
                         this.$router.push("/login")
                     } catch(err){

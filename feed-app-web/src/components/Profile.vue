@@ -3,6 +3,7 @@ import { defineComponent } from 'vue'
 import UserProfile from './UserProfile.vue'
 import type {FAUser} from '../assets/Entities'
 import {SERVER_URL} from '../assets/config'
+import jwt_decode from 'jwt-decode'
 
     export default defineComponent ({
         components: {
@@ -15,17 +16,19 @@ import {SERVER_URL} from '../assets/config'
                 loaded: false
             }
         },
-        props: ['userId']
-        ,
         mounted() {
             this.fetchData();
         },
         methods: {
             fetchData() {
                 try{
-                    fetch(SERVER_URL + '/users/' + this.userId)
-                    .then((response) => response.json())
-                    .then((data) => this.user = data);
+                    this.axios.get(SERVER_URL + '/users/' + (jwt_decode(localStorage.token) as any).userId, {
+                        headers: {
+                            Authorization: `Bearer ${localStorage.token}`
+                        }
+                    })
+                    .then((response) => {
+                        this.user = response.data})
                     this.loaded = true
                 }catch(err){
                     this.loaded = false
@@ -34,19 +37,21 @@ import {SERVER_URL} from '../assets/config'
             updateUser(name:string, pwd:string) {
                 if(this.loaded){                    
                     try{
-                        fetch(SERVER_URL + '/users/' + this.user.id, 
+                        const token = (jwt_decode(localStorage.token) as any)
+                        this.axios.put(SERVER_URL + '/users/' + token.userId, 
                     {
-                        method: 'PUT',
+                        email: token.sub,
+                        password: pwd,
+                        name: name,
+                        admin: token.admin
+                    },
+                    {
                         headers: {
-                        'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                                email: this.user.email,
-                                password: pwd,
-                                name: name,
-                                admin: this.user.isAdmin
-                            })
-                    }).then((response) => response.json())
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${localStorage.token}`
+                        }
+                    }
+                    ).then((response) => response)
                         this.feedback = "Successfull update"
                     } catch(err){
                         this.feedback = ("Unsuccessfull update!")
@@ -68,8 +73,8 @@ import {SERVER_URL} from '../assets/config'
 </script>
 
 <template>
-    <div id="pollWrapper" v-if="user.id">
+    <p>Name: {{user.name}}</p>
+    <div id="pollWrapper">
         <UserProfile :user = "getUser" @updateUser="updateUser" :feedback = "feedback"></UserProfile>
     </div>
-    <p v-else>Invalid User Id</p>
 </template>

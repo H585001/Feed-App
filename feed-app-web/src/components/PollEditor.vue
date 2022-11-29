@@ -2,7 +2,18 @@
 import { SERVER_URL } from '@/assets/config'
 import { defineComponent } from 'vue'
 import type {Poll} from '../assets/Entities'
+import {useAuthStore} from '../assets/auth'
+import { storeToRefs } from 'pinia'
+import jwt_decode from "jwt-decode";
+
     export default defineComponent ({
+        setup() {
+            const auth = useAuthStore();
+            const {token} = storeToRefs(auth);
+            return {
+                token
+            };
+        },
         data() {
             return {
                 question: "",
@@ -37,13 +48,8 @@ import type {Poll} from '../assets/Entities'
                 if(await this.validInput()){
                     console.log("Valid input")
                     try{
-                        let response = fetch(SERVER_URL + '/users/' + this.userId + '/polls', 
-                    {
-                        method: 'POST',
-                        headers: {
-                        'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
+                        const token = localStorage.token;
+                        let response = this.axios.post(SERVER_URL + '/users/' + (jwt_decode(token) as any).userId + '/polls', {
                             question: this.question,
                             noCount: 0,
                             yesCount: 0,
@@ -52,8 +58,13 @@ import type {Poll} from '../assets/Entities'
                             status: status,
                             accessCode: this.accessCode,
                             public: this.public
-                            })
-                    })
+                        },
+                        {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${localStorage.getItem("token")}`
+                        },
+                        })
                         if((await response).status == 200){
                             alert("Poll created!")
                             this.$emit('close')
@@ -104,14 +115,21 @@ import type {Poll} from '../assets/Entities'
                 if(await this.validInput()){
                     console.log("Valid input")
                     try{
-                        fetch(SERVER_URL + '/polls/' + this.selectedPoll?.id, 
+                        this.axios.put(SERVER_URL + '/polls/' + this.selectedPoll?.id, 
                     {
-                        method: 'PUT',
+                        question: this.question,
+                        noCount: this.selectedPoll.noCount,
+                        yesCount: this.selectedPoll.yesCount,
+                        startTime: this.startTime,
+                        endTime: this.endTime,
+                        status: status,
+                        accessCode: this.accessCode,
+                        public: this.public
+                    }, {
                         headers: {
-                        'Content-Type': 'application/json',
-                        },
-                        body: json
-                    }).then((response) => response.json())
+                            authorization: `Bearer ${localStorage.token}`
+                        }
+                    }).then((response) => response)
                         alert("Poll updated!")
                         this.$emit('close')
                         this.$emit('pollUpdated')
@@ -125,17 +143,16 @@ import type {Poll} from '../assets/Entities'
             },
             async deletePoll(){
                 try{
-                        fetch(SERVER_URL + '/polls/' + this.selectedPoll?.id, 
+                        this.axios.delete(SERVER_URL + '/polls/' + this.selectedPoll?.id, 
                     {
-                        method: 'DELETE',
                         headers: {
                         'Content-Type': 'application/json',
+                        authorization: `Bearer ${localStorage.token}`
                         }
-                    }).then((response) => response.json())
+                    }).then((response) => response)
                         alert("Poll deleted!")
                         this.$emit('close')
                         this.$emit('pollDeleted')
-
                     } catch(err){
                         alert("Delete error!")
                     }

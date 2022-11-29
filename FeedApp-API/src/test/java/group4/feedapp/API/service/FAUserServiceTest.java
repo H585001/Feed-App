@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import group4.feedapp.API.dao.FAUserDAO;
 import group4.feedapp.API.model.FAUser;
@@ -22,6 +23,7 @@ public class FAUserServiceTest {
 	
 	@Mock
 	private FAUserDAO userDAO;
+	
 	
 	FAUser testUser = new FAUser("test@gmail.com", "testing", "Test User", false);
 	

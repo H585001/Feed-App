@@ -1,30 +1,46 @@
 <script lang="ts">
 import { SERVER_URL } from '@/assets/config';
 import type { FAUser } from '@/assets/Entities';
+import { storeToRefs } from 'pinia';
 import { defineComponent } from 'vue'
+import {useAuthStore} from '../assets/auth'
     export default defineComponent ({
+        setup() {
+            const auth = useAuthStore();
+            const {user, isAuthenticated, token} = storeToRefs(auth);
+            const { getUserDetails } = auth;
+            return {
+                user,
+                isAuthenticated,
+                token,
+                getUserDetails,
+            };
+        },
         data() {
             return {
                 email: "",
-                password: "",
-                user: {} as FAUser
+                password: ""
             }
         },
         methods: {
-            async signin() {
-                console.log("E-mail: " + this.email + "\nPassword: " + this.password);
-                await this.getUserByEmail(this.email)
-            },
-            async getUserByEmail(email:String) {
-                try{
-                    const response = await fetch(SERVER_URL + '/users/email/' + email)
-                    const data = await response.json();
-                    this.user = data
-                    console.log(this.user)
-                    this.$router.push('/dashboard/' + this.user.id)
-                }catch(err){
-                    alert("E-mail and password doesn't match!")
+            async login() {
+                await this.axios.post(SERVER_URL + '/token', {}, {
+                    auth: {
+                        username: this.email,
+                        password: this.password
+                    }
                 }
+                ).then((response) => {
+                    this.token = response.data;
+                    this.getUserDetails();
+                    console.log(this.token);
+                    this.$router.push("/dashboard");
+                    localStorage.setItem("token", response.data);
+                    console.log(localStorage.token);
+                }).catch((error) => {
+                    console.log(error);
+                    alert("Invalid email or password");
+                });
             },
         }
     })
@@ -35,7 +51,7 @@ import { defineComponent } from 'vue'
         <h1>Sign In</h1>
         <input name="email" v-model="email" placeholder="E-mail"/>
         <input type="password" name="password" v-model="password" placeholder="Password" />
-        <button @click="signin">Sign in</button>
+        <button @click="login">Sign in</button>
         <p id="info">Don't have an account? <router-link id="registerLink" to="/register">Sign up here!</router-link></p>
     </div>
 </template>
