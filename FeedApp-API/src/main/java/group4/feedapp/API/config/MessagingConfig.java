@@ -1,13 +1,15 @@
-package group4.feedapp.API.messaging;
+package group4.feedapp.API.config;
 
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import group4.feedapp.API.messaging.Topics;
+
 @Configuration
 public class MessagingConfig {
 	
-	final static String POLL_EVENT_EXCHANGE = "poll-event-exchange";
+	public final static String POLL_EVENT_EXCHANGE = "poll-event-exchange";
 
 	// Creating queues for poll events
 	@Bean

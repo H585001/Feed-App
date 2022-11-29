@@ -2,9 +2,8 @@
 import PollCard from './poll-info-card.vue'
 import PollEditor from './PollEditor.vue'
 import { defineComponent } from 'vue'
-import type { FAUser, Poll} from '@/assets/Entities';
+import type {Poll} from '@/assets/Entities';
 import { SERVER_URL } from '@/assets/config';
-import { MODULEDECLARATION_TYPES } from '@babel/types';
 import {useAuthStore} from '../assets/auth'
 import { storeToRefs } from 'pinia'
 import jwt_decode from "jwt-decode";
@@ -37,12 +36,11 @@ import jwt_decode from "jwt-decode";
             PollEditor
         },
         mounted() {
-            this.initDashboard();
             this.auth();
+            this.initDashboard();
         },
         methods: {
             async fetchPolls() {
-                console.log("Token: " + localStorage.token);
                 try{
                     await this.axios.get(SERVER_URL + '/users/' + (jwt_decode(localStorage.token) as any).userId + "/polls", {
                         headers: {
@@ -51,7 +49,6 @@ import jwt_decode from "jwt-decode";
                     }
                     ).then((data) => {
                         this.userPolls = data.data;
-                        console.log(data);
                     });
                     
                     // Resetting poll lists

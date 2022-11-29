@@ -19,7 +19,6 @@ export const useAuthStore = defineStore("auth", {
         authenticationCheck() {
             if(localStorage.token != undefined) {
                 const endTime = (jwt_decode(localStorage.token) as any).exp as number;
-                console.log(new Date().getTime() / 1000 > endTime);
                 new Date().getTime() / 1000 > endTime;
                 return this.isAuthenticated = true;
             } else {

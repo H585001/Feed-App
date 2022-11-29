@@ -1,7 +1,6 @@
 <script lang="ts">
 import { SERVER_URL } from '@/assets/config'
 import { defineComponent } from 'vue'
-import type {Poll} from '../assets/Entities'
 import {useAuthStore} from '../assets/auth'
 import { storeToRefs } from 'pinia'
 import jwt_decode from "jwt-decode";
@@ -100,17 +99,6 @@ import jwt_decode from "jwt-decode";
                 }else if(this.startTime != null && new Date(this.startTime) < new Date()){
                     status = 1
                 }
-
-                let json = JSON.stringify({
-                            question: this.question,
-                            noCount: this.selectedPoll.noCount,
-                            yesCount: this.selectedPoll.yesCount,
-                            startTime: this.startTime,
-                            endTime: this.endTime,
-                            status: status,
-                            accessCode: this.accessCode,
-                            public: this.public
-                            })
 
                 if(await this.validInput()){
                     console.log("Valid input")

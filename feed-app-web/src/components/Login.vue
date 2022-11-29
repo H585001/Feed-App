@@ -1,6 +1,5 @@
 <script lang="ts">
 import { SERVER_URL } from '@/assets/config';
-import type { FAUser } from '@/assets/Entities';
 import { storeToRefs } from 'pinia';
 import { defineComponent } from 'vue'
 import {useAuthStore} from '../assets/auth'
@@ -33,10 +32,8 @@ import {useAuthStore} from '../assets/auth'
                 ).then((response) => {
                     this.token = response.data;
                     this.getUserDetails();
-                    console.log(this.token);
                     this.$router.push("/dashboard");
                     localStorage.setItem("token", response.data);
-                    console.log(localStorage.token);
                 }).catch((error) => {
                     console.log(error);
                     alert("Invalid email or password");

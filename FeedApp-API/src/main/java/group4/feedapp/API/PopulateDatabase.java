@@ -1,6 +1,5 @@
 package group4.feedapp.API;
 
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -16,9 +15,7 @@ import group4.feedapp.API.dao.FAUserDAO;
 import group4.feedapp.API.dao.FAUserDAOImplementation;
 import group4.feedapp.API.model.FAUser;
 import group4.feedapp.API.model.IoTDevice;
-import group4.feedapp.API.model.IoTVotes;
 import group4.feedapp.API.model.Poll;
-import group4.feedapp.API.model.Vote;
 
 public class PopulateDatabase {
 	private static final String PERSISTENCE_UNIT_NAME = "feedapp-derby";

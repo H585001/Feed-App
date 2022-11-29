@@ -1,10 +1,29 @@
 <script lang="ts">
+import { useAuthStore } from '@/assets/auth';
 import { defineComponent } from 'vue'
     export default defineComponent ({
+      setup() {
+            const auth = useAuthStore();
+            const { authenticationCheck } = auth;
+            return {
+                authenticationCheck
+            };
+        },
+        computed:{
+          getAuthenticationCheck(){
+            return this.authenticationCheck();
+          }
+        },
         data() {
             return {
 
             }
+        },
+        methods: {
+          logout(){
+            localStorage.removeItem("token");
+            this.$router.push("/");
+          },
         }
     })
 </script>
@@ -15,7 +34,8 @@ import { defineComponent } from 'vue'
         <li><router-link to="/">Search</router-link></li>
         <li><router-link to="/dashboard">Dashboard</router-link></li>
         <li><router-link to="/profile">Profile</router-link></li>
-        <li id="loginRef"><router-link to="/login">Login</router-link></li>
+        <li v-if="!getAuthenticationCheck" id="loginRef"><router-link to="/login">Login</router-link></li>
+        <li v-else id="loginRef"><router-link to="/" @click="logout">Log out</router-link></li>
     </ul>    
 </template>
 

@@ -4,8 +4,16 @@ import UserProfile from './UserProfile.vue'
 import type {FAUser} from '../assets/Entities'
 import {SERVER_URL} from '../assets/config'
 import jwt_decode from 'jwt-decode'
+import { useAuthStore } from '@/assets/auth'
 
     export default defineComponent ({
+        setup() {
+            const auth = useAuthStore();
+            const { authenticationCheck } = auth;
+            return {
+                authenticationCheck
+            };
+        },
         components: {
             UserProfile
         },
@@ -17,9 +25,14 @@ import jwt_decode from 'jwt-decode'
             }
         },
         mounted() {
+            this.auth();
             this.fetchData();
         },
         methods: {
+            auth() {
+                if (!this.authenticationCheck())
+                    this.$router.push("/login")
+            },
             fetchData() {
                 try{
                     this.axios.get(SERVER_URL + '/users/' + (jwt_decode(localStorage.token) as any).userId, {
