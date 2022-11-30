@@ -40,7 +40,7 @@ import jwt_decode from "jwt-decode";
         methods: {
             async createPoll(){
                 let status = 0;
-                if(this.startTime != null && new Date(this.startTime) < new Date()){
+                if(this.startTime == null || new Date(this.startTime) <= new Date()){
                     status = 1
                 }
 

@@ -51,7 +51,7 @@ public class PollService {
 			userDAO.updateUser(owner.getId(), owner);
 			poll = pollDAO.createPoll(poll);
 			
-			if (poll != null) {
+			if (poll != null && (poll.getStartTime() == null || poll.getStartTime().getTime() <= new Date().getTime())) {
 				messageSender.publishPollEvent(Topics.POLL_OPENED, poll);
 			}
 			
@@ -105,6 +105,8 @@ public class PollService {
 		// Checks if the poll is being closed: Message Event --> Poll closed 
 		if (poll.getStatus() != 2 && updatedPoll.getStatus() == 2) {
 			messageSender.publishPollEvent(Topics.POLL_CLOSED, updatedPoll);
+		}else if (poll.getStatus() == 0 && updatedPoll.getStatus() == 1) {
+			messageSender.publishPollEvent(Topics.POLL_OPENED, updatedPoll);
 		}
 		return updatedPoll;
 	}
@@ -185,13 +187,15 @@ public class PollService {
 		return pollDAO.getUserPolls(user);
 	}
 	
-	@Scheduled(fixedDelay = 60000) // Method is called with a fixed delay (in ms) between each invocation
+	@Scheduled(fixedDelay = 30000) // Method is called with a fixed delay (in ms) between each invocation
     public void closeExpiredPolls() {
 		// Scheduled service that checks if polls have expired (endTime < now())
+
         Collection<Poll> polls = this.getAllPolls();
         for(Poll poll : polls) {
         	Date endTime = poll.getEndTime();
-        	if(poll.getStatus() != 2 && endTime != null && endTime.getTime() < new Date().getTime()) {
+        	Date now = new Date();
+        	if(poll.getStatus() != 2 && endTime != null && endTime.compareTo(now) <= 0) {
         		this.closePoll(poll);
         	}
         }
@@ -200,6 +204,27 @@ public class PollService {
 	 public boolean closePoll(Poll poll) {
 	    if(poll != null && poll.getStatus() != 2) {
 	    	poll.setStatus(2);
+	    	return this.updatePoll(poll.getId(), poll) != null;
+	    }
+	    return false;
+	}
+	 
+	@Scheduled(fixedDelay = 30000) // Method is called with a fixed delay (in ms) between each invocation
+    public void openPolls() {
+		// Scheduled service that checks if polls should be opened (startTime <= now
+        Collection<Poll> polls = this.getAllPolls();
+        for(Poll poll : polls) {
+        	Date startTime = poll.getStartTime();
+        	Date now = new Date();
+        	if(poll.getStatus() == 0 && (startTime == null || startTime.compareTo(now) <= 0 )) {
+        		this.openPoll(poll);
+        	}
+        }
+    }
+	
+	public boolean openPoll(Poll poll) {
+	    if(poll != null && poll.getStatus() != 1) {
+	    	poll.setStatus(1);
 	    	return this.updatePoll(poll.getId(), poll) != null;
 	    }
 	    return false;
